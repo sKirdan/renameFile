@@ -6,8 +6,9 @@ link: str = "C:\\Users\\User\Desktop\osTest"
 # print(os.getcwd())
 
 
+
 def app(str1: str):
-    os.chdir(link)
+    os.chdir(str1)
     name: int = 1
     for file in os.listdir(str1):
         print(file)
@@ -21,4 +22,4 @@ def app(str1: str):
         print(name)
 
 
-app("C:\\Users\\User\Desktop\osTest")
+app(input())
