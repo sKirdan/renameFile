@@ -1,25 +1,39 @@
 import os
 
-link: str = "C:\\Users\\User\Desktop\osTest"
+link: str = ""
 
 
-# print(os.getcwd())
+def organizeFolder(address: str):
+    os.chdir(address)
+    collectedTypes: {str: []} = collectTypes()
+
+    createFoldersIfNotExist(collectedTypes.keys())
+    groupByFolders(collectedTypes)
 
 
-
-def app(str1: str):
-    os.chdir(str1)
-    name: int = 1
-    for file in os.listdir(str1):
-        print(file)
-        src = os.path.abspath(file)
-        dst = str1 + '\\' + str(name) + "." + os.path.basename(file).split(".")[-1]
-        print(src)
-        print(dst)
-
-        os.rename(src, dst)
-        name += 1
-        print(name)
+def collectTypes():
+    folderTypes: {str: []} = {}
+    for file in os.listdir(os.getcwd()):
+        if not os.path.isdir(file):
+            extension = file.split(".")[-1]
+            if not folderTypes.get(extension):
+                folderTypes[extension] = []
+            folderTypes[extension].append(file)
+    return folderTypes
 
 
-app(input())
+def createFoldersIfNotExist(folders: [str]):
+    for name in folders:
+        if not os.path.exists(name):
+            os.mkdir(name)
+
+
+def groupByFolders(folder: {str: []}):
+    for extension in folder.keys():
+        for file in folder[extension]:
+            src = os.path.abspath(file)
+            dst = os.getcwd() + '\\' + extension + '\\' + str(file)
+            os.rename(src, dst)
+
+
+organizeFolder(link)
