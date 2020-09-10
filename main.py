@@ -1,39 +1,37 @@
 import os
+import re
 
-link: str = ""
+regex: str = "(_%s)(\W|_)"
+
+link: str = "C:\\Users\\User\Desktop\dd"
+namePattern: str = input()
+language: [] = [
+    "es-mx", "zh-hans", "zh-hant", "zh-cn", "bg", "ch", "cs", "da",
+    "es", "et", "fi", "fr", "hu", "it", "ja", "ko",
+    "ms", "no", "nl", "pl", "pt", "ro",
+    "ru", "sk", "sv", "th", "de", "el", "en",
+]
 
 
-def organizeFolder(address: str):
+def renameFiles(address: str, namePattern: str):
     os.chdir(address)
-    collectedTypes: {str: []} = collectTypes()
-
-    createFoldersIfNotExist(collectedTypes.keys())
-    groupByFolders(collectedTypes)
+    collectTypes()
 
 
 def collectTypes():
-    folderTypes: {str: []} = {}
     for file in os.listdir(os.getcwd()):
+        print(file)
         if not os.path.isdir(file):
-            extension = file.split(".")[-1]
-            if not folderTypes.get(extension):
-                folderTypes[extension] = []
-            folderTypes[extension].append(file)
-    return folderTypes
+
+            for abbr in language:
+                file = file.lower()
+                if re.search(regex % abbr, file):
+                    splitedName = re.split(regex % abbr, file)
+                    splitedName[0] = namePattern
+                    tmpName: str = ""
+                    os.rename(os.path.abspath(file), os.getcwd() + '\\' + str.join(tmpName, splitedName))
+                    print(file)
+                    print(splitedName)
 
 
-def createFoldersIfNotExist(folders: [str]):
-    for name in folders:
-        if not os.path.exists(name):
-            os.mkdir(name)
-
-
-def groupByFolders(folder: {str: []}):
-    for extension in folder.keys():
-        for file in folder[extension]:
-            src = os.path.abspath(file)
-            dst = os.getcwd() + '\\' + extension + '\\' + str(file)
-            os.rename(src, dst)
-
-
-organizeFolder(link)
+renameFiles(link, namePattern)
